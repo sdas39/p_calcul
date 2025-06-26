@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Period Tracker for My Love ❤️</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #ffe6f0;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d63384;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 15px 0 5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .output {
+      background: #f8d7da;
+      color: #721c24;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    #affirmation {
+      font-style: italic;
+      color: #d63384;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hi Love 💕</h1>
+    <p>Let’s predict your next period safely and easily 💫</p>
+    <p id="affirmation"></p>
+
+    <form>
+      <label for="last-period">Last Period Start Date:</label>
+      <input type="date" id="last-period" name="last-period" required>
+
+      <label for="cycle-length">Average Cycle Length (in days):</label>
+      <select id="cycle-length" name="cycle-length" required>
+        <option value="28">28 days (default)</option>
+        <option value="25">25 days</option>
+        <option value="30">30 days</option>
+        <option value="32">32 days</option>
+        <option value="35">35 days</option>
+      </select>
+
+      <label for="duration">Period Duration (in days):</label>
+      <select id="duration" name="duration">
+        <option value="5">5 days</option>
+        <option value="4">4 days</option>
+        <option value="6">6 days</option>
+        <option value="7">7 days</option>
+      </select>
+
+      <label for="symptoms">How are you feeling today?</label>
+      <select id="symptoms" name="symptoms">
+        <option>Happy 😊</option>
+        <option>Crampy 😣</option>
+        <option>Moody 😒</option>
+        <option>Energetic 💃</option>
+        <option>Bloated 😩</option>
+      </select>
+    </form>
+
+    <div class="output" id="prediction-output">
+      <p>Fill in the details above to see predictions 🌸</p>
+    </div>
+
+    <div class="footer">
+      Made with ❤️ for my beautiful girlfriend.<br>
+      You are strong, loved, and amazing always!
+    </div>
+  </div>
+
+  <script>
+    const lastPeriodInput = document.getElementById('last-period');
+    const cycleLengthInput = document.getElementById('cycle-length');
+    const outputDiv = document.getElementById('prediction-output');
+
+    // Daily affirmations
+    const affirmations = [
+      "You’re beautiful every single day 💖",
+      "You are stronger than any pain 💪",
+      "I’m always here for you 🌈",
+      "You make my world brighter 🌸",
+      "Take it easy, you deserve rest 🫶"
+    ];
+    document.getElementById('affirmation').textContent =
+      affirmations[Math.floor(Math.random() * affirmations.length)];
+
+    // Restore saved last period
+    if (localStorage.getItem('lastPeriod')) {
+      lastPeriodInput.value = localStorage.getItem('lastPeriod');
+    }
+
+    function updatePrediction() {
+      const lastDate = new Date(lastPeriodInput.value);
+      const cycle = parseInt(cycleLengthInput.value);
+
+      if (!isNaN(lastDate.getTime())) {
+        localStorage.setItem('lastPeriod', lastPeriodInput.value); // Save to localStorage
+
+        const nextDate = new Date(lastDate);
+        nextDate.setDate(lastDate.getDate() + cycle);
+
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedNextDate = nextDate.toLocaleDateString(undefined, options);
+
+        // Ovulation and fertile window
+        const ovulationDate = new Date(nextDate);
+        ovulationDate.setDate(nextDate.getDate() - 14);
+        const ovulationStr = ovulationDate.toLocaleDateString(undefined, options);
+
+        const fertileStart = new Date(ovulationDate);
+        fertileStart.setDate(fertileStart.getDate() - 2);
+        const fertileEnd = new Date(ovulationDate);
+        fertileEnd.setDate(fertileEnd.getDate() + 2);
+        const fertileStr = `${fertileStart.toLocaleDateString(undefined, options)} to ${fertileEnd.toLocaleDateString(undefined, options)}`;
+
+        outputDiv.innerHTML = `
+          <p><strong>Your next period is likely around:</strong></p>
+          <p><strong style="color:#d63384;">${formattedNextDate}</strong></p>
+          <p>Estimated Ovulation: <strong>${ovulationStr}</strong></p>
+          <p>Fertile Window: <strong>${fertileStr}</strong></p>
+          <p>Set a reminder, love! 💕</p>
+        `;
+
+        setTimeout(() => {
+          alert("Reminder: Mark your next period date in your calendar! ❤️");
+        }, 300); // Slight delay
+      }
+    }
+
+    lastPeriodInput.addEventListener('change', updatePrediction);
+    cycleLengthInput.addEventListener('change', updatePrediction);
+  </script>
+</body>
+</html>
